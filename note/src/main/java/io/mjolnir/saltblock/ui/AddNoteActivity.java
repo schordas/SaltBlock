@@ -1,18 +1,19 @@
-package io.mjolnir.saltblock;
+package io.mjolnir.saltblock.ui;
 
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.view.View;
+
+import io.mjolnir.saltblock.models.AddNoteViewModel;
+import io.mjolnir.saltblock.R;
 
 public class AddNoteActivity extends AppCompatActivity {
 

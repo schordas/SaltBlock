@@ -1,4 +1,4 @@
-package io.mjolnir.saltblock;
+package io.mjolnir.saltblock.data;
 
 import com.google.firebase.database.Exclude;
 

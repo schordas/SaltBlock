@@ -6,7 +6,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import io.mjolnir.saltblock.Note;
+import io.mjolnir.saltblock.data.Note;
 import io.mjolnir.saltblock.R;
 
 public class NoteViewHolder extends RecyclerView.ViewHolder {

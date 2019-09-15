@@ -1,8 +1,5 @@
-package io.mjolnir.saltblock;
+package io.mjolnir.saltblock.models;
 
-import android.util.Log;
-
-import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.database.DatabaseReference;
@@ -11,9 +8,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.mjolnir.saltblock.data.Note;
+import io.mjolnir.saltblock.SaltBlock;
+
 public class AddNoteViewModel extends ViewModel {
-    private static final DatabaseReference USERS_REF =
-            FirebaseDatabase.getInstance().getReference("/users/");
 
     private static final DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
 

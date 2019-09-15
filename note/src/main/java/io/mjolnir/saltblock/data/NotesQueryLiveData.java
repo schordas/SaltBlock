@@ -1,4 +1,4 @@
-package io.mjolnir.saltblock;
+package io.mjolnir.saltblock.data;
 
 import android.util.Log;
 

@@ -5,22 +5,26 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.paging.PagedListAdapter;
-import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import io.mjolnir.saltblock.Note;
+import io.mjolnir.saltblock.data.Note;
 import io.mjolnir.saltblock.R;
 
 public class NoteAdapter extends RecyclerView.Adapter<NoteViewHolder> {
 
     private List<Note> mNotes;
 
+    public NoteAdapter() {
+        mNotes = new ArrayList<>();
+    }
+
     public NoteAdapter(List<Note> notes) {
         this.mNotes = notes;
     }
+
     @NonNull
     @Override
     public NoteViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -39,6 +43,11 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteViewHolder> {
     public void onBindViewHolder(NoteViewHolder holder, int position) {
         Note note = mNotes.get(position);
         holder.bindTo(note);
+    }
+
+    public void updateList(List<Note> notes) {
+        this.mNotes = notes;
+        notifyDataSetChanged();
     }
 
 }
