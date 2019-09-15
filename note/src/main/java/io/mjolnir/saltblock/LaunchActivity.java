@@ -19,6 +19,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.mjolnir.saltblock.data.User;
+import io.mjolnir.saltblock.ui.MainActivity;
+
 public class LaunchActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;

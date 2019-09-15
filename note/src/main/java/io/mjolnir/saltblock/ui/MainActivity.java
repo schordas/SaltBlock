@@ -1,32 +1,39 @@
-package io.mjolnir.saltblock;
+package io.mjolnir.saltblock.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.paging.PagedList;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
+
+import io.mjolnir.saltblock.R;
+import io.mjolnir.saltblock.data.Note;
 import io.mjolnir.saltblock.adapter.NoteAdapter;
+import io.mjolnir.saltblock.models.ListViewModel;
 
 public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
+    private String uId;
+
+    private ListViewModel viewModel;
 
     private NoteAdapter adapter;
     private RecyclerView recyclerView;
@@ -38,7 +45,11 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        viewModel = ViewModelProviders.of(this).get(ListViewModel.class);
         mAuth = FirebaseAuth.getInstance();
+
+        uId = mAuth.getCurrentUser().getUid();
+
         initAdapter();
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -51,10 +62,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initAdapter() {
-        List<Note> notes = new ArrayList<>();
-        notes.add(new Note("Sample", "Here is a note"));
-        adapter = new NoteAdapter(notes);
 
+        adapter = new NoteAdapter();
+        viewModel.getNotes(uId).observe(this, new Observer<DataSnapshot>() {
+            @Override
+            public void onChanged(DataSnapshot dataSnapshot) {
+                if (dataSnapshot != null) {
+                    List<Note> notes = viewModel.parseSnapshot(dataSnapshot);
+                    adapter.updateList(notes);
+                }
+            }
+        });
         recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
