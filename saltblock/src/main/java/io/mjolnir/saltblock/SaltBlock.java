@@ -1,5 +1,6 @@
 package io.mjolnir.saltblock;
 
+import java.security.PublicKey;
 import java.util.List;
 
 public class SaltBlock {
@@ -32,14 +33,16 @@ public class SaltBlock {
                     e.printStackTrace();
                     return null;
                 }
+            case RSA:
+                try {
+                    return RSA.encrypt(keyAlias, plainTexts);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return null;
+                }
             default:
-                //TODO: change this once other encryption methods exist.
-                return null;
+               return  null;
         }
-    }
-
-    public void encrypt(String keyAlias, String password, List<String> plainTexts) {
-
     }
 
     public List<String> decrypt(String keyAlias, List<String> cipherTexts) {
@@ -51,10 +54,27 @@ public class SaltBlock {
                     e.printStackTrace();
                     return null;
                 }
+            case RSA:
+                try {
+
+                    return RSA.decrypt(keyAlias, cipherTexts);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return null;
+                }
             default:
                 //TODO: change this once other encryption methods exist.
                 return null;
         }
+    }
+
+    /**
+     * @return RSA public key. Returns null if RSA is not implemented
+     */
+    public PublicKey getPublicKey(String keyAlias) {
+       if (mAlg == EncryptionAlgorithm.AES) return null;
+
+       return RSA.getPublicKey(keyAlias);
     }
 
 }
