@@ -1,7 +1,5 @@
 package io.mjolnir.saltblock;
 
-import android.util.Log;
-
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -17,15 +15,13 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
 
-public class AES extends KeyProvider {
-
-    private static final String LOG_TAG = AES.class.getSimpleName();
-
+public class AES extends AESKeyProvider {
+private static final String LOG_TAG = AES.class.getSimpleName();
     static List<String> encrypt(String alias, List<String> plainTexts) throws
             NoSuchAlgorithmException, NoSuchPaddingException, BadPaddingException,
             IllegalBlockSizeException, InvalidKeyException {
 
-        SecretKey key = getKey(alias);
+        SecretKey key = getAesKey(alias);
         List<String> cipherTexts = new ArrayList<>();
 
         Cipher cipher = Cipher.getInstance(Constants.AES);
@@ -50,7 +46,7 @@ public class AES extends KeyProvider {
             NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
             InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
 
-        SecretKey key = getKey(keyAlias);
+        SecretKey key = getAesKey(keyAlias);
         if (key == null) {
             throw new NullPointerException("Secret key is null");
         }

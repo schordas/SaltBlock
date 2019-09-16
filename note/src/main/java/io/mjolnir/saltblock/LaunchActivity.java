@@ -50,6 +50,7 @@ public class LaunchActivity extends AppCompatActivity {
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
+                            Log.e(LaunchActivity.class.getSimpleName(), "Sign in");
                             if (task.isSuccessful()) {
                                 FirebaseUser fbUser = mAuth.getCurrentUser();
                                 Map<String, User> users = new HashMap<>();
@@ -58,7 +59,8 @@ public class LaunchActivity extends AppCompatActivity {
 
                                 startMain();
                             } else {
-                                Log.e(LaunchActivity.class.getSimpleName(), "Sign in failed");
+                                Log.e(LaunchActivity.class.getSimpleName(), "Sign in: " + task.getException().getMessage());
+
                             }
 
                         }

@@ -23,7 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+import io.mjolnir.saltblock.EncryptionAlgorithm;
 import io.mjolnir.saltblock.R;
+import io.mjolnir.saltblock.SaltBlock;
 import io.mjolnir.saltblock.data.Note;
 import io.mjolnir.saltblock.adapter.NoteAdapter;
 import io.mjolnir.saltblock.models.ListViewModel;
@@ -44,6 +46,27 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        List<String> RSATest = new ArrayList<>();
+
+        RSATest.add("Hello");
+        RSATest.add("World");
+        RSATest.add("This is a test string");
+
+        SaltBlock saltBlock = new SaltBlock(EncryptionAlgorithm.RSA);
+
+        List<String> RSAEnc = saltBlock.encrypt("myRSAKey", RSATest);
+
+
+        for (String enc : RSAEnc) {
+            Log.i(MainActivity.class.getSimpleName(), "Enc: " + enc);
+        }
+
+        List<String> RSAde = saltBlock.decrypt("myRSAKey", RSAEnc);
+
+        for (String dec : RSAde) {
+            Log.i(MainActivity.class.getSimpleName(), "Dec: " + dec);
+        }
 
         viewModel = ViewModelProviders.of(this).get(ListViewModel.class);
         mAuth = FirebaseAuth.getInstance();
