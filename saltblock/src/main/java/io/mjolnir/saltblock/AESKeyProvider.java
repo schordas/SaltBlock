@@ -18,7 +18,7 @@ import java.security.cert.CertificateException;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 
-public class AESKeyProvider extends KeyProvider {
+class AESKeyProvider extends KeyProvider {
 
     private static final String LOG_TAG = AESKeyProvider.class.getSimpleName();
 

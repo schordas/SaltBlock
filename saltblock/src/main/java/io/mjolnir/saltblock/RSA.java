@@ -1,6 +1,5 @@
 package io.mjolnir.saltblock;
 
-import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
@@ -48,7 +47,9 @@ class RSA extends RSAKeyProvider {
         return cipherTexts;
     }
 
-    static List<String> decrypt(String keyAlias, List<String> cipherTexts) throws NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+    static List<String> decrypt(String keyAlias, List<String> cipherTexts) throws
+            NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException,
+            InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
         PrivateKey key = getPrivateKey(keyAlias);
 
         Cipher cipher = Cipher.getInstance(Constants.RSA, Constants.KEY_STORE_WORK_AROUND);
@@ -60,7 +61,7 @@ class RSA extends RSAKeyProvider {
             byte[] cipherBytes = Encoder.decode(cipherText);
 
             byte[] plainTextBytes = cipher.doFinal(cipherBytes);
-            String plainText = new String(plainTextBytes, StandardCharsets.UTF_8);
+            String plainText = Encoder.decodeToString(plainTextBytes);
             plainTexts.add(plainText);
         }
 
