@@ -19,7 +19,7 @@ import java.security.PublicKey;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 
-public class RSAKeyProvider extends KeyProvider {
+class RSAKeyProvider extends KeyProvider {
 
     private static final String LOG_TAG = RSAKeyProvider.class.getSimpleName();
 
@@ -33,7 +33,6 @@ public class RSAKeyProvider extends KeyProvider {
             return null;
         }
     }
-
 
     private static KeyPair findOrGenerateRsaKey(String keyAlias) throws CertificateException,
             NoSuchAlgorithmException, KeyStoreException, IOException, NoSuchProviderException,

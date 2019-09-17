@@ -1,6 +1,5 @@
 package io.mjolnir.saltblock;
 
-import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -15,8 +14,8 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
 
-public class AES extends AESKeyProvider {
-private static final String LOG_TAG = AES.class.getSimpleName();
+class AES extends AESKeyProvider {
+
     static List<String> encrypt(String alias, List<String> plainTexts) throws
             NoSuchAlgorithmException, NoSuchPaddingException, BadPaddingException,
             IllegalBlockSizeException, InvalidKeyException {
@@ -74,7 +73,8 @@ private static final String LOG_TAG = AES.class.getSimpleName();
             cipher.init(Cipher.DECRYPT_MODE, key, spec);
             byte[] decryptedBytes = cipher.doFinal(cipherBytes);
 
-            plainTexts.add(new String(decryptedBytes, StandardCharsets.UTF_8));
+            String plainText = Encoder.decodeToString(decryptedBytes);
+            plainTexts.add(plainText);
         }
 
         return plainTexts;

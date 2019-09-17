@@ -63,7 +63,6 @@ public class SaltBlock {
                     return null;
                 }
             default:
-                //TODO: change this once other encryption methods exist.
                 return null;
         }
     }
