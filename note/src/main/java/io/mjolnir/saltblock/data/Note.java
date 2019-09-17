@@ -4,9 +4,12 @@ import androidx.annotation.Nullable;
 
 import com.google.firebase.database.IgnoreExtraProperties;
 
-@IgnoreExtraProperties
-public class Note {
+import java.io.Serializable;
 
+@IgnoreExtraProperties
+public class Note implements Serializable  {
+
+    public String id;
     public String title;
     public String note;
 
@@ -14,7 +17,8 @@ public class Note {
         // Default constructor for Firebase snapshot
     }
 
-    public Note(String title, String note) {
+    public Note(String id, String title, String note) {
+        this.id = id;
         this.title = title;
         this.note = note;
     }
@@ -26,6 +30,6 @@ public class Note {
        }
 
        Note note = (Note) obj;
-       return note.title.equals(this.title);
+       return note.id.equals(this.id);
     }
 }

@@ -17,12 +17,11 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteViewHolder> {
 
     private List<Note> mNotes;
 
-    public NoteAdapter() {
-        mNotes = new ArrayList<>();
-    }
+    private NoteClickListener mNoteClickListener;
 
-    public NoteAdapter(List<Note> notes) {
-        this.mNotes = notes;
+    public NoteAdapter(NoteClickListener noteClickListener) {
+        mNotes = new ArrayList<>();
+        this.mNoteClickListener = noteClickListener;
     }
 
     @NonNull
@@ -31,7 +30,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteViewHolder> {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View view = layoutInflater.inflate(R.layout.item_note, parent, false);
 
-        return new NoteViewHolder(view);
+        return new NoteViewHolder(view, mNoteClickListener);
     }
 
     @Override
@@ -43,6 +42,10 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteViewHolder> {
     public void onBindViewHolder(NoteViewHolder holder, int position) {
         Note note = mNotes.get(position);
         holder.bindTo(note);
+    }
+
+    public Note getNote(int position) {
+        return mNotes.get(position);
     }
 
     public void updateList(List<Note> notes) {
