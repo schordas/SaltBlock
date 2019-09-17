@@ -30,20 +30,23 @@ public class ListViewModel extends ViewModel {
     }
 
     public List<Note> parseSnapshot(DataSnapshot snapshot) {
-        List<String> cipherTitles  = new ArrayList<>();
+        List<String> ids = new ArrayList<>();
+        List<String> cipherTitles = new ArrayList<>();
         List<String> cipherNotes = new ArrayList<>();
         for (DataSnapshot snap : snapshot.getChildren()) {
             if (!snap.getValue().toString().equals(uId)) {
                 Note note = snap.getValue(Note.class);
+                ids.add(note.id);
                 cipherTitles.add(note.title);
                 cipherNotes.add(note.note);
             }
         }
+
         List<String> titles = saltBlock.decrypt("myNoteAlias", cipherTitles);
         List<String> notes = saltBlock.decrypt("myNoteAlias", cipherNotes);
         List<Note> noteObjs = new ArrayList<>();
         for (int i = 0; i < titles.size(); i++) {
-            Note note = new Note(titles.get(i), notes.get(i));
+            Note note = new Note(ids.get(i), titles.get(i), notes.get(i));
             noteObjs.add(note);
         }
         return noteObjs;

@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".ui.AddNoteActivity"
-    tools:showIn="@layout/activity_add">
+    tools:context=".ui.EditNoteActivity"
+    tools:showIn="@layout/activity_edit">
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/title_input"

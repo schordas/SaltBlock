@@ -9,14 +9,23 @@ import androidx.recyclerview.widget.RecyclerView;
 import io.mjolnir.saltblock.data.Note;
 import io.mjolnir.saltblock.R;
 
-public class NoteViewHolder extends RecyclerView.ViewHolder {
+public class NoteViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-    public NoteViewHolder(@NonNull View itemView) {
+    NoteClickListener mNoteClickListener;
+
+    public NoteViewHolder(@NonNull View itemView, NoteClickListener noteClickListener) {
         super(itemView);
+        this.mNoteClickListener = noteClickListener;
+        itemView.setOnClickListener(this);
     }
 
     public void bindTo(Note note) {
         TextView title = itemView.findViewById(R.id.title);
         title.setText(note.title);
+    }
+
+    @Override
+    public void onClick(View view) {
+        mNoteClickListener.onClick(view, getAdapterPosition());
     }
 }

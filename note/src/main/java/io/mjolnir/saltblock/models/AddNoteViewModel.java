@@ -8,12 +8,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.mjolnir.saltblock.data.Note;
 import io.mjolnir.saltblock.SaltBlock;
+import io.mjolnir.saltblock.data.Note;
 
 public class AddNoteViewModel extends ViewModel {
 
     private static final DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+
+    private static String mId;
 
     public void editNote(String uId, String title, String text) {
         SaltBlock saltBlock = new SaltBlock();
@@ -23,7 +25,23 @@ public class AddNoteViewModel extends ViewModel {
         list.add(text);
 
         List<String> encrypted = saltBlock.encrypt("myNoteAlias", list);
-        DatabaseReference noteRef = mDatabase.child("users/").child(uId).push();
-        noteRef.setValue(new Note(encrypted.get(0), encrypted.get(1)));
+
+        DatabaseReference noteRef = mDatabase.child("users/").child(uId);
+        String id;
+        DatabaseReference newNote;
+
+        if (mId == null) {
+            newNote = noteRef.push();
+            id = newNote.getKey();
+        } else {
+            newNote = noteRef.child(mId);
+            id = mId;
+        }
+
+        newNote.setValue(new Note(id, encrypted.get(0), encrypted.get(1)));
+    }
+
+    public void setId(String id) {
+        mId = id;
     }
 }
