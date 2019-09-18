@@ -45,6 +45,18 @@ public class SaltBlock {
         }
     }
 
+    public String encrypt(String keyAlias, String plainText) {
+
+        switch (mAlg) {
+            case AES:
+                return AES.encrypt(keyAlias, plainText);
+            case RSA:
+                return RSA.encrypt(keyAlias, plainText);
+            default:
+                return  null;
+        }
+    }
+
     public List<String> decrypt(String keyAlias, List<String> cipherTexts) {
         switch (mAlg) {
             case AES:
@@ -62,6 +74,17 @@ public class SaltBlock {
                     e.printStackTrace();
                     return null;
                 }
+            default:
+                return null;
+        }
+    }
+
+    public String decrypt(String keyAlias, String cipherText) {
+        switch (mAlg) {
+            case AES:
+                return AES.decrypt(keyAlias, cipherText);
+            case RSA:
+                return RSA.decrypt(keyAlias, cipherText);
             default:
                 return null;
         }

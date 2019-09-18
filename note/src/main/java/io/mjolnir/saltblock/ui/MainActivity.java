@@ -48,27 +48,6 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        List<String> RSATest = new ArrayList<>();
-
-        RSATest.add("Hello");
-        RSATest.add("World");
-        RSATest.add("This is a test string");
-
-        SaltBlock saltBlock = new SaltBlock(EncryptionAlgorithm.RSA);
-
-        List<String> RSAEnc = saltBlock.encrypt("myRSAKey", RSATest);
-
-
-        for (String enc : RSAEnc) {
-            Log.i(MainActivity.class.getSimpleName(), "Enc: " + enc);
-        }
-
-        List<String> RSAde = saltBlock.decrypt("myRSAKey", RSAEnc);
-
-        for (String dec : RSAde) {
-            Log.i(MainActivity.class.getSimpleName(), "Dec: " + dec);
-        }
-
         viewModel = ViewModelProviders.of(this).get(ListViewModel.class);
         mAuth = FirebaseAuth.getInstance();
 
