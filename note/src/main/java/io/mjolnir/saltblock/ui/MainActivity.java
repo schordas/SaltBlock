@@ -2,10 +2,9 @@ package io.mjolnir.saltblock.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -14,21 +13,16 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
-import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
 
-import java.util.ArrayList;
 import java.util.List;
 
-
-import io.mjolnir.saltblock.EncryptionAlgorithm;
 import io.mjolnir.saltblock.R;
-import io.mjolnir.saltblock.SaltBlock;
+import io.mjolnir.saltblock.adapter.NoteAdapter;
 import io.mjolnir.saltblock.adapter.NoteClickListener;
 import io.mjolnir.saltblock.data.Note;
-import io.mjolnir.saltblock.adapter.NoteAdapter;
 import io.mjolnir.saltblock.models.ListViewModel;
 
 public class MainActivity extends AppCompatActivity {

@@ -10,8 +10,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.mjolnir.saltblock.data.Note;
 import io.mjolnir.saltblock.R;
+import io.mjolnir.saltblock.data.Note;
 
 public class NoteAdapter extends RecyclerView.Adapter<NoteViewHolder> {
 

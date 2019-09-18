@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.mjolnir.saltblock.EncryptionAlgorithm;
-import io.mjolnir.saltblock.SaltBlock;
+import io.mjolnir.saltblock.SaltBlockK;
 import io.mjolnir.saltblock.data.Note;
 
 public class AddNoteViewModel extends ViewModel {
@@ -23,8 +23,8 @@ public class AddNoteViewModel extends ViewModel {
     private static String mAlg = EncryptionAlgorithm.AES.name();
 
     public void editNote(String uId, String title, String text) {
-        SaltBlock saltBlockAES = new SaltBlock();
-        SaltBlock saltBlockRSA = new SaltBlock(EncryptionAlgorithm.RSA);
+        SaltBlockK saltBlockAES = new SaltBlockK();
+        SaltBlockK saltBlockRSA = new SaltBlockK(EncryptionAlgorithm.RSA);
 
         List<String> list = new ArrayList<>();
         list.add(title);
