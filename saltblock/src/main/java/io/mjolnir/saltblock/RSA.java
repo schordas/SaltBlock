@@ -26,6 +26,18 @@ class RSA extends RSAKeyProvider {
         return keyPair != null ? keyPair.getPrivate() : null;
     }
 
+    static String encrypt(String keyAlias, String plainText) {
+        List<String> list = new ArrayList<>();
+        list.add(plainText);
+
+        try {
+            return encrypt(keyAlias, list).get(0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     static List<String> encrypt(String keyAlias, List<String> plainTexts) throws
             NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException,
             InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
@@ -66,5 +78,17 @@ class RSA extends RSAKeyProvider {
         }
 
         return plainTexts;
+    }
+
+    static String decrypt(String keyAlias, String cipherText) {
+        List<String> list = new ArrayList<>();
+        list.add(cipherText);
+
+        try {
+            return decrypt(keyAlias, list).get(0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

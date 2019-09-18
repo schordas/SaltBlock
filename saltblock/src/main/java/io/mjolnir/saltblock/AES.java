@@ -16,6 +16,17 @@ import javax.crypto.spec.GCMParameterSpec;
 
 class AES extends AESKeyProvider {
 
+    static String encrypt(String alias, String plainText) {
+        List<String> list = new ArrayList<>();
+        list.add(plainText);
+        try {
+            return encrypt(alias, list).get(0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     static List<String> encrypt(String alias, List<String> plainTexts) throws
             NoSuchAlgorithmException, NoSuchPaddingException, BadPaddingException,
             IllegalBlockSizeException, InvalidKeyException {
@@ -39,6 +50,17 @@ class AES extends AESKeyProvider {
         }
 
         return cipherTexts;
+    }
+
+    static String decrypt(String alias, String cipherText) {
+        List<String> list = new ArrayList<>();
+        list.add(cipherText);
+        try {
+            return decrypt(alias, list).get(0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     static List<String> decrypt(String keyAlias, List<String> cipherTexts) throws
