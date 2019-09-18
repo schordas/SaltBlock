@@ -16,10 +16,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import io.mjolnir.saltblock.data.User;
 import io.mjolnir.saltblock.ui.MainActivity;
 
 public class LaunchActivity extends AppCompatActivity {
@@ -52,15 +48,9 @@ public class LaunchActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             Log.e(LaunchActivity.class.getSimpleName(), "Sign in");
                             if (task.isSuccessful()) {
-                                FirebaseUser fbUser = mAuth.getCurrentUser();
-                                Map<String, User> users = new HashMap<>();
-                                users.put(fbUser.getUid(), new User(fbUser.getUid()));
-                                mDb.child("users").setValue(users);
-
                                 startMain();
                             } else {
                                 Log.e(LaunchActivity.class.getSimpleName(), "Sign in: " + task.getException().getMessage());
-
                             }
 
                         }

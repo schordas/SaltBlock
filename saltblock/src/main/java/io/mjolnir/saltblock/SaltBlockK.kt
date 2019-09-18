@@ -12,6 +12,13 @@
 //           awaitEncrypt(plainTexts)
 //        }
 //    }
+// val x = myMethod {
+//      Next two run synchronously
+//      val one = async { encryption()}
+//      one.await() //this what returns
+// }
+
+// suspend fun encrypt
 //
 //    private suspend fun awaitEncrypt(plainTexts : List<String>): List<String> {
 //        return withContext(Dispatchers.Default) {
@@ -19,3 +26,4 @@
 //        }
 //    }
 //}
+//if my partner drinks tap water he gets exima

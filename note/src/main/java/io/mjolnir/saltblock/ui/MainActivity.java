@@ -26,6 +26,7 @@ import java.util.List;
 import io.mjolnir.saltblock.EncryptionAlgorithm;
 import io.mjolnir.saltblock.R;
 import io.mjolnir.saltblock.SaltBlock;
+import io.mjolnir.saltblock.adapter.NoteClickListener;
 import io.mjolnir.saltblock.data.Note;
 import io.mjolnir.saltblock.adapter.NoteAdapter;
 import io.mjolnir.saltblock.models.ListViewModel;
@@ -47,27 +48,6 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        List<String> RSATest = new ArrayList<>();
-
-        RSATest.add("Hello");
-        RSATest.add("World");
-        RSATest.add("This is a test string");
-
-        SaltBlock saltBlock = new SaltBlock(EncryptionAlgorithm.RSA);
-
-        List<String> RSAEnc = saltBlock.encrypt("myRSAKey", RSATest);
-
-
-        for (String enc : RSAEnc) {
-            Log.i(MainActivity.class.getSimpleName(), "Enc: " + enc);
-        }
-
-        List<String> RSAde = saltBlock.decrypt("myRSAKey", RSAEnc);
-
-        for (String dec : RSAde) {
-            Log.i(MainActivity.class.getSimpleName(), "Dec: " + dec);
-        }
-
         viewModel = ViewModelProviders.of(this).get(ListViewModel.class);
         mAuth = FirebaseAuth.getInstance();
 
@@ -78,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, AddNoteActivity.class);
+                Intent intent = new Intent(MainActivity.this, EditNoteActivity.class);
                 startActivity(intent);
             }
         });
@@ -86,7 +66,15 @@ public class MainActivity extends AppCompatActivity {
 
     private void initAdapter() {
 
-        adapter = new NoteAdapter();
+        NoteClickListener listener = new NoteClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                Note note = adapter.getNote(position);
+                launchEdit(note);
+            }
+        };
+
+        adapter = new NoteAdapter(listener);
         viewModel.getNotes(uId).observe(this, new Observer<DataSnapshot>() {
             @Override
             public void onChanged(DataSnapshot dataSnapshot) {
@@ -99,6 +87,12 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
+    }
+
+    private void launchEdit(Note note) {
+        Intent intent = new Intent(this, EditNoteActivity.class);
+        intent.putExtra("note", note);
+        startActivity(intent);
     }
 
     @Override
