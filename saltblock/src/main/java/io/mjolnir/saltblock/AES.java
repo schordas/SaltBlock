@@ -102,7 +102,7 @@ class AES extends AESKeyProvider {
         return plainTexts;
     }
 
-    static byte[] decryptObj(String alias, String cipherText) throws NoSuchPaddingException,
+    static byte[] decryptToObj(String alias, String cipherText) throws NoSuchPaddingException,
             NoSuchAlgorithmException {
         SecretKey key = getAesKey(alias);
         Cipher cipher = Cipher.getInstance(Constants.AES);

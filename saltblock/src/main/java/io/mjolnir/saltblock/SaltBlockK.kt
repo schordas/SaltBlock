@@ -39,7 +39,7 @@ class SaltBlockK(private val encryptionAlgorithm: EncryptionAlgorithm = Encrypti
                     AES.encrypt(keyAlias, bytes)
                 }
                 EncryptionAlgorithm.RSA -> {
-                    RSA.encrypt(keyAlias, "temp")
+                   RSA.encrypt(keyAlias, bytes)
                 }
             }
         } catch (e : java.lang.Exception) {
@@ -72,10 +72,10 @@ class SaltBlockK(private val encryptionAlgorithm: EncryptionAlgorithm = Encrypti
         return decrypt(keyAlias, cipherTexts)[0]
     }
 
-    fun decryptObj(keyAlias: String, cipherText: String) : Object {
+    fun decryptToObj(keyAlias: String, cipherText: String) : Object {
         return runBlocking {
             withContext(Dispatchers.Default) {
-                threadDecryptObj(keyAlias, cipherText)
+                threadDecryptToObj(keyAlias, cipherText)
             }
         }
     }
@@ -87,17 +87,17 @@ class SaltBlockK(private val encryptionAlgorithm: EncryptionAlgorithm = Encrypti
        }
     }
 
-    private fun threadDecryptObj(keyAlias: String, cipherText: String) : Object {
+    private fun threadDecryptToObj(keyAlias: String, cipherText: String) : Object {
         return try {
             when(encryptionAlgorithm) {
                 EncryptionAlgorithm.AES -> {
-                    val plainText = AES.decryptObj(keyAlias, cipherText)
-                    plainText.getObject()
+                    val plainBytes = AES.decryptToObj(keyAlias, cipherText)
+                    plainBytes.getObject()
                 }
 
                 EncryptionAlgorithm.RSA -> {
-//                    RSA.decrypt("key", "temp")
-                    Object()
+                    val plainBytes = RSA.decryptToObj(keyAlias, cipherText)
+                    plainBytes.getObject()
                 }
             }
         } catch (e : java.lang.Exception) {
