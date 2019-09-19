@@ -79,16 +79,16 @@ public class SaltBlock {
         }
     }
 
-    public String decrypt(String keyAlias, String cipherText) {
-        switch (mAlg) {
-            case AES:
-                return AES.decrypt(keyAlias, cipherText);
-            case RSA:
-                return RSA.decrypt(keyAlias, cipherText);
-            default:
-                return null;
-        }
-    }
+//    public String decrypt(String keyAlias, String cipherText) {
+//        switch (mAlg) {
+//            case AES:
+//                return AES.decrypt(keyAlias, cipherText);
+//            case RSA:
+//                return RSA.decrypt(keyAlias, cipherText);
+//            default:
+//                return null;
+//        }
+//    }
 
     /**
      * @return RSA public key. Returns null if RSA is not implemented
