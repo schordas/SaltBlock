@@ -37,19 +37,36 @@ class AES extends AESKeyProvider {
         Cipher cipher = Cipher.getInstance(Constants.AES);
 
         for (String plainText : plainTexts) {
-            cipher.init(Cipher.ENCRYPT_MODE, key);
-            byte [] iv = cipher.getIV();
-            byte [] encryptedBytes = cipher.doFinal(plainText.getBytes());
-            String encryptedString = Encoder.encodeToString(iv) + Constants.IV_SEPARATOR;
-
-            // clean array for security
-            Arrays.fill(iv, (byte) 0);
-
-            encryptedString += Encoder.encodeToString(encryptedBytes);
+            String encryptedString = doEncrypt(cipher, key, plainText.getBytes());
             cipherTexts.add(encryptedString);
         }
 
         return cipherTexts;
+    }
+
+    static String encrypt(String alias, byte[] plainBytes) throws NoSuchPaddingException,
+            NoSuchAlgorithmException, InvalidKeyException, BadPaddingException,
+            IllegalBlockSizeException {
+        SecretKey key = getAesKey(alias);
+
+        Cipher cipher = Cipher.getInstance(Constants.AES);
+
+        return doEncrypt(cipher, key, plainBytes);
+    }
+
+    static String doEncrypt(Cipher cipher, SecretKey key, byte[] plainBytes) throws
+            BadPaddingException, IllegalBlockSizeException, InvalidKeyException {
+        cipher.init(Cipher.ENCRYPT_MODE, key);
+        byte[] iv = cipher.getIV();
+        byte[] encryptedBytes = cipher.doFinal(plainBytes);
+        String encryptedString = Encoder.encodeToString(iv) + Constants.IV_SEPARATOR;
+
+        // fill iv for security
+        Arrays.fill(iv, (byte) 0);
+
+        encryptedString += Encoder.encodeToString(encryptedBytes);
+
+        return encryptedString;
     }
 
     static String decrypt(String alias, String cipherText) {
@@ -77,30 +94,49 @@ class AES extends AESKeyProvider {
         Cipher cipher = Cipher.getInstance(Constants.AES);
 
         for (String cipherText : cipherTexts) {
-            String[] split = parseCipherText(cipherText);
-            String iv = split[0];
-            byte[] ivBytes = Encoder.decode(iv);
-
-            // clean iv string
-            iv = null;
-            GCMParameterSpec spec = new GCMParameterSpec(128, ivBytes);
-
-            // clean ivByteArray
-            Arrays.fill(ivBytes, (byte) 0);
-
-            cipherText = split[1];
-
-            byte[] cipherBytes = Encoder.decode(cipherText);
-
-            cipher.init(Cipher.DECRYPT_MODE, key, spec);
-            byte[] decryptedBytes = cipher.doFinal(cipherBytes);
-
-            String plainText = Encoder.decodeToString(decryptedBytes);
+            byte[] plainTextBytes = doDecrypt(cipher, key, cipherText);
+            String plainText = Encoder.decodeToString(plainTextBytes);
             plainTexts.add(plainText);
         }
 
         return plainTexts;
+    }
 
+    static byte[] decryptObj(String alias, String cipherText) throws NoSuchPaddingException,
+            NoSuchAlgorithmException {
+        SecretKey key = getAesKey(alias);
+        Cipher cipher = Cipher.getInstance(Constants.AES);
+        try {
+            return doDecrypt(cipher, key, cipherText);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private static byte[] doDecrypt(Cipher cipher, SecretKey key, String cipherText) throws
+            InvalidAlgorithmParameterException, InvalidKeyException, BadPaddingException,
+            IllegalBlockSizeException {
+
+        String[] split = parseCipherText(cipherText);
+        String iv = split[0];
+        byte[] ivBytes = Encoder.decode(iv);
+
+        // clean iv string
+        iv = null;
+        GCMParameterSpec spec = new GCMParameterSpec(128, ivBytes);
+
+        // clean ivByteArray
+        Arrays.fill(ivBytes, (byte) 0);
+
+        cipherText = split[1];
+
+        byte[] cipherBytes = Encoder.decode(cipherText);
+
+        cipher.init(Cipher.DECRYPT_MODE, key, spec);
+        byte[] decryptedBytes = cipher.doFinal(cipherBytes);
+
+        return decryptedBytes;
     }
 
     private static String[] parseCipherText(String cipherText) {
