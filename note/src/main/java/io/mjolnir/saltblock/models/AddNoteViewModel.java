@@ -58,6 +58,15 @@ public class AddNoteViewModel extends ViewModel {
         mId = id;
     }
 
+    public boolean setAlg(String alg) {
+        if (alg.equals(EncryptionAlgorithm.AES.name())) {
+            toggleAlg(true);
+        } else {
+            toggleAlg(false);
+        }
+        return mIsAES;
+    }
+
     public void toggleAlg(boolean isAES) {
         mIsAES = isAES;
         if (mIsAES) {
