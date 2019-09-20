@@ -53,6 +53,8 @@ public class EditNoteActivity extends AppCompatActivity {
                 String titleText = mTitle.getText().toString();
                 String noteText = mNote.getText().toString();
                 viewModel.editNote(uId, titleText, noteText);
+                viewModel.setId(null);
+                finish();
             }
         });
     }
