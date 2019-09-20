@@ -37,7 +37,6 @@ public class EditNoteActivity extends AppCompatActivity {
         mNote = findViewById(R.id.note_input);
         mAESBtn = findViewById(R.id.AES_button);
         mRSABtn = findViewById(R.id.RSA_button);
-        toggleAES();
 
         viewModel = ViewModelProviders.of(this).get(AddNoteViewModel.class);
 
@@ -81,6 +80,12 @@ public class EditNoteActivity extends AppCompatActivity {
         Note note = (Note) intent.getSerializableExtra("note");
         if (note != null) {
             viewModel.setId(note.id);
+            boolean isAes = viewModel.setAlg(note.alg);
+            if (isAes) {
+                toggleAES();
+            } else {
+                toggleRSA();
+            }
             mTitle.setText(note.title);
             mNote.setText(note.note);
         }
