@@ -13,28 +13,22 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import io.mjolnir.saltblock.ui.MainActivity;
 
 public class LaunchActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
-    private DatabaseReference mDb;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i(LaunchActivity.class.getSimpleName(), "onCreate");
         mAuth = FirebaseAuth.getInstance();
-        mDb = FirebaseDatabase.getInstance().getReference();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        Log.i(LaunchActivity.class.getSimpleName(), "onStart");
         FirebaseUser user = mAuth.getCurrentUser();
 
         signIn(user);
@@ -46,13 +40,12 @@ public class LaunchActivity extends AppCompatActivity {
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
-                            Log.e(LaunchActivity.class.getSimpleName(), "Sign in");
                             if (task.isSuccessful()) {
                                 startMain();
                             } else {
-                                Log.e(LaunchActivity.class.getSimpleName(), "Sign in: " + task.getException().getMessage());
+                                Log.e(LaunchActivity.class.getSimpleName(), "Sign in failed: "
+                                        + task.getException().getMessage());
                             }
-
                         }
                     });
 
