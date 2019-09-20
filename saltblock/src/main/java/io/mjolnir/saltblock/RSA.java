@@ -38,6 +38,16 @@ class RSA extends RSAKeyProvider {
         }
     }
 
+    static String encrypt(String keyAlias, byte[] plainBytes) throws
+            NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException,
+            InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+        PublicKey key = getPublicKey(keyAlias);
+        Cipher cipher = Cipher.getInstance(Constants.RSA, Constants.KEY_STORE_WORK_AROUND);
+        cipher.init(Cipher.ENCRYPT_MODE, key);
+
+        return doEncrypt(cipher, plainBytes);
+    }
+
     static List<String> encrypt(String keyAlias, List<String> plainTexts) throws
             NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException,
             InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
@@ -49,14 +59,18 @@ class RSA extends RSAKeyProvider {
         List<String> cipherTexts = new ArrayList<>();
 
         for (String plainText : plainTexts) {
-            byte[] cipherBytes = cipher.doFinal(plainText.getBytes());
-
-            String cipherStr = Encoder.encodeToString(cipherBytes);
+            String cipherStr = doEncrypt(cipher, plainText.getBytes());
 
             cipherTexts.add(cipherStr);
         }
 
         return cipherTexts;
+    }
+
+    static String doEncrypt(Cipher cipher, byte[] plainBytes) throws
+            BadPaddingException, IllegalBlockSizeException {
+        byte[] cipherBytes = cipher.doFinal(plainBytes);
+        return Encoder.encodeToString(cipherBytes);
     }
 
     static List<String> decrypt(String keyAlias, List<String> cipherTexts) throws
@@ -70,9 +84,8 @@ class RSA extends RSAKeyProvider {
         List<String> plainTexts = new ArrayList<>();
 
         for (String cipherText : cipherTexts) {
-            byte[] cipherBytes = Encoder.decode(cipherText);
+            byte[] plainTextBytes = doDecrypt(cipher, cipherText);
 
-            byte[] plainTextBytes = cipher.doFinal(cipherBytes);
             String plainText = Encoder.decodeToString(plainTextBytes);
             plainTexts.add(plainText);
         }
@@ -90,5 +103,20 @@ class RSA extends RSAKeyProvider {
             e.printStackTrace();
             return null;
         }
+    }
+
+    static byte[] decryptToObj(String alias, String cipherText) throws InvalidKeyException,
+            BadPaddingException, IllegalBlockSizeException, NoSuchPaddingException,
+            NoSuchAlgorithmException, NoSuchProviderException {
+        PrivateKey key = getPrivateKey(alias);
+        Cipher cipher = Cipher.getInstance(Constants.RSA, Constants.KEY_STORE_WORK_AROUND);
+        cipher.init(Cipher.DECRYPT_MODE, key);
+        return doDecrypt(cipher, cipherText);
+    }
+
+    static byte[] doDecrypt(Cipher cipher, String cipherText) throws BadPaddingException,
+            IllegalBlockSizeException {
+        byte[] cipherBytes = Encoder.decode(cipherText);
+        return cipher.doFinal(cipherBytes);
     }
 }
