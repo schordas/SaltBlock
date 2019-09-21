@@ -1,6 +1,7 @@
 package io.mjolnir.saltblock;
 
 import java.security.InvalidKeyException;
+import java.security.Key;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -24,28 +25,6 @@ class RSA extends RSAKeyProvider {
     private static PrivateKey getPrivateKey(String keyAlias) {
         KeyPair keyPair = getRsaKey(keyAlias);
         return keyPair != null ? keyPair.getPrivate() : null;
-    }
-
-    static String encrypt(String keyAlias, String plainText) {
-        List<String> list = new ArrayList<>();
-        list.add(plainText);
-
-        try {
-            return encrypt(keyAlias, list).get(0);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    static String encrypt(String keyAlias, byte[] plainBytes) throws
-            NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException,
-            InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
-        PublicKey key = getPublicKey(keyAlias);
-        Cipher cipher = Cipher.getInstance(Constants.RSA, Constants.KEY_STORE_WORK_AROUND);
-        cipher.init(Cipher.ENCRYPT_MODE, key);
-
-        return doEncrypt(cipher, plainBytes);
     }
 
     static List<String> encrypt(String keyAlias, List<String> plainTexts) throws
@@ -93,30 +72,27 @@ class RSA extends RSAKeyProvider {
         return plainTexts;
     }
 
-    static String decrypt(String keyAlias, String cipherText) {
-        List<String> list = new ArrayList<>();
-        list.add(cipherText);
-
-        try {
-            return decrypt(keyAlias, list).get(0);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    static byte[] decryptToObj(String alias, String cipherText) throws InvalidKeyException,
-            BadPaddingException, IllegalBlockSizeException, NoSuchPaddingException,
-            NoSuchAlgorithmException, NoSuchProviderException {
-        PrivateKey key = getPrivateKey(alias);
-        Cipher cipher = Cipher.getInstance(Constants.RSA, Constants.KEY_STORE_WORK_AROUND);
-        cipher.init(Cipher.DECRYPT_MODE, key);
-        return doDecrypt(cipher, cipherText);
-    }
-
     static byte[] doDecrypt(Cipher cipher, String cipherText) throws BadPaddingException,
             IllegalBlockSizeException {
         byte[] cipherBytes = Encoder.decode(cipherText);
         return cipher.doFinal(cipherBytes);
+    }
+
+    static byte[] doFinal(int mode, String alias, byte[] bytes) throws NoSuchPaddingException,
+            NoSuchAlgorithmException, NoSuchProviderException, InvalidKeyException,
+            BadPaddingException, IllegalBlockSizeException {
+        Key key;
+        if (mode == Cipher.ENCRYPT_MODE) {
+           key = getPublicKey(alias);
+        } else if(mode == Cipher.DECRYPT_MODE) {
+           key = getPrivateKey(alias);
+        } else {
+            throw new IllegalArgumentException("Cipher mode must be specified to encrypt or decrypt");
+        }
+
+        Cipher cipher = Cipher.getInstance(Constants.RSA, Constants.KEY_STORE_WORK_AROUND);
+        cipher.init(mode, key);
+
+        return cipher.doFinal(bytes);
     }
 }

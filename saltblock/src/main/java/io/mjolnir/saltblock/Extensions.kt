@@ -20,14 +20,16 @@ fun Serializable.getByteArray(): ByteArray {
     return bytes
 }
 
-fun ByteArray.getObject(): Object {
+fun ByteArray.getObject(): Any {
 
     val byteStream = ByteArrayInputStream(this)
     val input: ObjectInput
     input = ObjectInputStream(byteStream)
-    val obj = input.readObject() as Object
+    val obj = input.readObject() as Any
     input.close()
     return obj
 }
+
+fun emptyByteArray(): ByteArray = ByteArray(0)
 
 fun emptyString(): String = ""
