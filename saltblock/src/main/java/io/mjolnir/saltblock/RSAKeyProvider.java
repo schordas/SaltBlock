@@ -8,6 +8,7 @@ import android.util.Log;
 
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
+import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.KeyStore;
@@ -18,6 +19,8 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.X509EncodedKeySpec;
 
 class RSAKeyProvider extends KeyProvider {
 
@@ -70,5 +73,12 @@ class RSAKeyProvider extends KeyProvider {
 
         keyGenerator.initialize(keyBuilder.build());
         keyGenerator.generateKeyPair();
+    }
+
+    private static PublicKey publicKeyFromString(String key) throws NoSuchAlgorithmException,
+            InvalidKeySpecException {
+       byte[] keyBytes = Encoder.decode(key);
+        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+        return keyFactory.generatePublic(new X509EncodedKeySpec(keyBytes));
     }
 }
