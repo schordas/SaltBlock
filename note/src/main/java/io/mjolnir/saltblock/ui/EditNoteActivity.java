@@ -14,6 +14,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 
 import io.mjolnir.saltblock.R;
+import io.mjolnir.saltblock.SaltBlock;
 import io.mjolnir.saltblock.data.Note;
 import io.mjolnir.saltblock.models.AddNoteViewModel;
 
@@ -53,7 +54,6 @@ public class EditNoteActivity extends AppCompatActivity {
                 String titleText = mTitle.getText().toString();
                 String noteText = mNote.getText().toString();
                 viewModel.editNote(uId, titleText, noteText);
-                viewModel.setId(null);
                 finish();
             }
         });
@@ -107,5 +107,11 @@ public class EditNoteActivity extends AppCompatActivity {
 
         mAESBtn.setEnabled(true);
         mAESBtn.setBackgroundColor(getColor(R.color.colorAccent));
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        viewModel.setId(null);
     }
 }
