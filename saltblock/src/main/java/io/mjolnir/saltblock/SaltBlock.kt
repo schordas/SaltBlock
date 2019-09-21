@@ -2,13 +2,13 @@ package io.mjolnir.saltblock
 
 import java.io.Serializable
 
-class SaltBlockK(private val encryptionAlgorithm: EncryptionAlgorithm = EncryptionAlgorithm.AES) {
+class SaltBlock(private val encryptionAlgorithm: EncryptionAlgorithm = EncryptionAlgorithm.AES) {
 
     fun encrypt(keyAlias: String, plainText: String) : String {
         return processEncryptionRequest(encryptionAlgorithm, keyAlias, plainText)
     }
 
-    fun encryptObj(keyAlias: String, obj: Serializable) : String {
+    fun encrypt(keyAlias: String, obj: Serializable) : String {
         return processEncryptionRequest(encryptionAlgorithm, keyAlias, obj)
     }
 
@@ -17,7 +17,7 @@ class SaltBlockK(private val encryptionAlgorithm: EncryptionAlgorithm = Encrypti
     }
 
     fun decrypt(keyAlias: String, cipherText: String) : String {
-        return processDecyptionRequest(encryptionAlgorithm, keyAlias, cipherText)
+        return processDecryptionRequest(encryptionAlgorithm, keyAlias, cipherText)
     }
 
     fun decryptToObj(keyAlias: String, cipherText: String) : Any {
@@ -25,6 +25,6 @@ class SaltBlockK(private val encryptionAlgorithm: EncryptionAlgorithm = Encrypti
     }
     
     fun decrypt(keyAlias: String, cipherTexts: List<String>) : List<String> {
-        return processEncryptionRequest(encryptionAlgorithm, keyAlias, cipherTexts)
+        return processDecryptionRequest(encryptionAlgorithm, keyAlias, cipherTexts)
     }
 }

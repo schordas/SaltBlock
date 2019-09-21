@@ -16,15 +16,14 @@ import javax.crypto.spec.GCMParameterSpec;
 
 class AES extends AESKeyProvider {
 
-    static String encrypt(String alias, String plainText) {
-        List<String> list = new ArrayList<>();
-        list.add(plainText);
-        try {
-            return encrypt(alias, list).get(0);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+    static String encrypt(String alias, byte[] plainBytes) throws NoSuchPaddingException,
+            NoSuchAlgorithmException, InvalidKeyException, BadPaddingException,
+            IllegalBlockSizeException {
+        SecretKey key = getAesKey(alias);
+
+        Cipher cipher = Cipher.getInstance(Constants.AES);
+
+        return doEncrypt(cipher, key, plainBytes);
     }
 
     static List<String> encrypt(String alias, List<String> plainTexts) throws
@@ -44,16 +43,6 @@ class AES extends AESKeyProvider {
         return cipherTexts;
     }
 
-    static String encrypt(String alias, byte[] plainBytes) throws NoSuchPaddingException,
-            NoSuchAlgorithmException, InvalidKeyException, BadPaddingException,
-            IllegalBlockSizeException {
-        SecretKey key = getAesKey(alias);
-
-        Cipher cipher = Cipher.getInstance(Constants.AES);
-
-        return doEncrypt(cipher, key, plainBytes);
-    }
-
     static String doEncrypt(Cipher cipher, SecretKey key, byte[] plainBytes) throws
             BadPaddingException, IllegalBlockSizeException, InvalidKeyException {
         cipher.init(Cipher.ENCRYPT_MODE, key);
@@ -69,11 +58,13 @@ class AES extends AESKeyProvider {
         return encryptedString;
     }
 
-    static String decrypt(String alias, String cipherText) {
-        List<String> list = new ArrayList<>();
-        list.add(cipherText);
+    static byte[] decrypt(String alias, String cipherText) throws NoSuchPaddingException,
+            NoSuchAlgorithmException {
+        Cipher cipher = Cipher.getInstance(Constants.AES);
+        SecretKey key = getAesKey(alias);
+
         try {
-            return decrypt(alias, list).get(0);
+            return doDecrypt(cipher, key, cipherText);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -85,9 +76,6 @@ class AES extends AESKeyProvider {
             InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
 
         SecretKey key = getAesKey(keyAlias);
-        if (key == null) {
-            throw new NullPointerException("Secret key is null");
-        }
 
         List<String> plainTexts = new ArrayList<>();
 
@@ -100,18 +88,6 @@ class AES extends AESKeyProvider {
         }
 
         return plainTexts;
-    }
-
-    static byte[] decryptToObj(String alias, String cipherText) throws NoSuchPaddingException,
-            NoSuchAlgorithmException {
-        SecretKey key = getAesKey(alias);
-        Cipher cipher = Cipher.getInstance(Constants.AES);
-        try {
-            return doDecrypt(cipher, key, cipherText);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
     private static byte[] doDecrypt(Cipher cipher, SecretKey key, String cipherText) throws
@@ -134,9 +110,8 @@ class AES extends AESKeyProvider {
         byte[] cipherBytes = Encoder.decode(cipherText);
 
         cipher.init(Cipher.DECRYPT_MODE, key, spec);
-        byte[] decryptedBytes = cipher.doFinal(cipherBytes);
 
-        return decryptedBytes;
+        return cipher.doFinal(cipherBytes);
     }
 
     private static String[] parseCipherText(String cipherText) {

@@ -6,8 +6,8 @@ import kotlinx.coroutines.withContext
 import java.lang.Exception
 import javax.crypto.Cipher
 
-fun processDecyptionRequest(encryptionAlgorithm: EncryptionAlgorithm, keyAlias: String,
-                            cipherText: String) : String {
+fun processDecryptionRequest(encryptionAlgorithm: EncryptionAlgorithm, keyAlias: String,
+                             cipherText: String) : String {
     return runBlocking {
         withContext(Dispatchers.Default) {
             val bytes = threadedDecryptionRequest(encryptionAlgorithm, keyAlias, cipherText)
@@ -27,10 +27,10 @@ fun processDecryptionToObjectRequest(encryptionAlgorithm: EncryptionAlgorithm, k
 }
 
 fun processDecryptionRequest(encryptionAlgorithm: EncryptionAlgorithm, keyAlias: String,
-                             plainTexts: List<String>) : List<String> {
+                             cipherTexts: List<String>) : List<String> {
     return runBlocking {
         withContext(Dispatchers.Default) {
-            threadedDecryptionRequest(encryptionAlgorithm, keyAlias, plainTexts)
+            threadedDecryptionRequest(encryptionAlgorithm, keyAlias, cipherTexts)
         }
     }
 }
@@ -41,8 +41,7 @@ private fun threadedDecryptionRequest(encryptionAlgorithm: EncryptionAlgorithm, 
     return try {
         when(encryptionAlgorithm) {
             EncryptionAlgorithm.AES -> {
-                // TODO: temporary. change this once AES has been restructured
-                emptyByteArray()
+                AES.decrypt(keyAlias, cipherText)
             }
 
             EncryptionAlgorithm.RSA -> {
@@ -60,7 +59,7 @@ private fun threadedDecryptionRequest(encryptionAlgorithm: EncryptionAlgorithm, 
     return try {
         when(encryptionAlgorithm) {
             EncryptionAlgorithm.AES -> {
-                AES.encrypt(keyAlias, cipherTexts)
+                AES.decrypt(keyAlias, cipherTexts)
             }
 
             EncryptionAlgorithm.RSA -> {

@@ -35,13 +35,13 @@ fun processEncryptionRequest(encryptionAlgorithm: EncryptionAlgorithm, keyAlias:
 
 private fun threadedEncryptionRequest(encryptionAlgorithm: EncryptionAlgorithm, keyAlias: String,
                               plainText: String) : String {
+    val plainBytes = plainText.toByteArray()
     return try {
         when(encryptionAlgorithm) {
             EncryptionAlgorithm.AES -> {
-                AES.encrypt(keyAlias, plainText)
+                AES.encrypt(keyAlias, plainBytes)
             }
             EncryptionAlgorithm.RSA -> {
-                val plainBytes = plainText.toByteArray()
                 encryptRSA(keyAlias, plainBytes)
             }
         }
