@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.mjolnir.saltblock.EncryptionAlgorithm;
-import io.mjolnir.saltblock.SaltBlockK;
+import io.mjolnir.saltblock.SaltBlock;
 import io.mjolnir.saltblock.data.Note;
 import io.mjolnir.saltblock.data.NotesQueryLiveData;
 
@@ -22,8 +22,8 @@ public class ListViewModel extends ViewModel {
 
     private String uId;
 
-    private SaltBlockK saltBlockAES = new SaltBlockK();
-    private SaltBlockK saltBlockRSA = new SaltBlockK(EncryptionAlgorithm.RSA);
+    private SaltBlock saltBlockAES = new SaltBlock();
+    private SaltBlock saltBlockRSA = new SaltBlock(EncryptionAlgorithm.RSA);
 
     @NonNull
     public LiveData<DataSnapshot> getNotes(String uId) {
