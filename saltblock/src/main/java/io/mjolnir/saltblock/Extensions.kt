@@ -1,7 +1,6 @@
 package io.mjolnir.saltblock
 
 import java.io.*
-import java.lang.IllegalArgumentException
 
 fun Serializable.getByteArray(): ByteArray {
     val byteStream = ByteArrayOutputStream()

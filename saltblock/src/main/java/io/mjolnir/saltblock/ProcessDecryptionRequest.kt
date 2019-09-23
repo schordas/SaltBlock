@@ -3,6 +3,7 @@ package io.mjolnir.saltblock
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import java.io.File
 import java.lang.Exception
 import javax.crypto.Cipher
 
@@ -33,6 +34,26 @@ fun processDecryptionRequest(encryptionAlgorithm: EncryptionAlgorithm, keyAlias:
             threadedDecryptionRequest(encryptionAlgorithm, keyAlias, cipherTexts)
         }
     }
+}
+
+fun processDecryptionRequest(keyAlias: String, file: File) : File {
+    return runBlocking {
+        withContext(Dispatchers.Default) {
+            val fileStr = file.readText()
+            val plainBytes = threadedDecryptionRequest(keyAlias, fileStr)
+            file.writeBytes(plainBytes)
+            file
+        }
+    }
+}
+
+private fun threadedDecryptionRequest(keyAlias: String, cipherText: String) : ByteArray {
+   return try {
+       AES.decrypt(keyAlias, cipherText)
+   } catch (e : Exception) {
+       e.printStackTrace()
+       emptyByteArray()
+   }
 }
 
 private fun threadedDecryptionRequest(encryptionAlgorithm: EncryptionAlgorithm, keyAlias: String,
