@@ -42,6 +42,8 @@ private fun threadedEncryptionRequest(encryptionAlgorithm: EncryptionAlgorithm, 
                 AES.encrypt(keyAlias, plainBytes)
             }
             EncryptionAlgorithm.RSA -> {
+                // Check bytes are not over 245
+                isOver(plainBytes)
                 encryptRSA(keyAlias, plainBytes)
             }
         }
@@ -60,6 +62,8 @@ private fun threadedEncryptionRequest(encryptionAlgorithm: EncryptionAlgorithm, 
                 AES.encrypt(keyAlias, plainBytes)
             }
             EncryptionAlgorithm.RSA -> {
+                // Check bytes are not over 245
+                isOver(plainBytes)
                 encryptRSA(keyAlias, plainBytes)
             }
         }

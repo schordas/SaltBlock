@@ -38,6 +38,8 @@ class RSA extends RSAKeyProvider {
         List<String> cipherTexts = new ArrayList<>();
 
         for (String plainText : plainTexts) {
+            // Check that plainText is not too large
+            ExtensionsKt.isOver(plainText.getBytes());
             String cipherStr = doEncrypt(cipher, plainText.getBytes());
 
             cipherTexts.add(cipherStr);
