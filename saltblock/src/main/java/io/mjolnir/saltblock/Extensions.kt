@@ -33,3 +33,7 @@ fun ByteArray.getObject(): Any {
 fun emptyByteArray(): ByteArray = ByteArray(0)
 
 fun emptyString(): String = ""
+
+fun isOver(bytes: ByteArray) {
+    require(bytes.size < 245) { "Error: Cannot use RSA to encrypt more than 245 bytes" }
+}

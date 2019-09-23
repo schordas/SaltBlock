@@ -3,6 +3,7 @@ package io.mjolnir.saltblock
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import java.io.File
 import java.io.Serializable
 import javax.crypto.Cipher
 
@@ -33,6 +34,27 @@ fun processEncryptionRequest(encryptionAlgorithm: EncryptionAlgorithm, keyAlias:
     }
 }
 
+fun processEncryptionRequest(keyAlias: String, file: File) : File {
+    return runBlocking {
+        withContext(Dispatchers.Default) {
+            val plainBytes = file.readBytes()
+            val fileStr = threadedEncryptionRequest(keyAlias, plainBytes)
+            file.writeBytes(fileStr.toByteArray())
+            file
+        }
+    }
+}
+
+private fun threadedEncryptionRequest(keyAlias: String,
+                                      plainBytes: ByteArray) : String {
+    return try {
+            AES.encrypt(keyAlias, plainBytes)
+        } catch (e : Exception) {
+        e.printStackTrace()
+        emptyString()
+    }
+}
+
 private fun threadedEncryptionRequest(encryptionAlgorithm: EncryptionAlgorithm, keyAlias: String,
                               plainText: String) : String {
     val plainBytes = plainText.toByteArray()
@@ -42,6 +64,8 @@ private fun threadedEncryptionRequest(encryptionAlgorithm: EncryptionAlgorithm, 
                 AES.encrypt(keyAlias, plainBytes)
             }
             EncryptionAlgorithm.RSA -> {
+                // Check bytes are not over 245
+                isOver(plainBytes)
                 encryptRSA(keyAlias, plainBytes)
             }
         }
@@ -60,6 +84,8 @@ private fun threadedEncryptionRequest(encryptionAlgorithm: EncryptionAlgorithm, 
                 AES.encrypt(keyAlias, plainBytes)
             }
             EncryptionAlgorithm.RSA -> {
+                // Check bytes are not over 245
+                isOver(plainBytes)
                 encryptRSA(keyAlias, plainBytes)
             }
         }

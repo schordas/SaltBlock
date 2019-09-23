@@ -1,5 +1,6 @@
 package io.mjolnir.saltblock
 
+import java.io.File
 import java.io.Serializable
 
 class SaltBlock(private val encryptionAlgorithm: EncryptionAlgorithm = EncryptionAlgorithm.AES) {
@@ -16,6 +17,10 @@ class SaltBlock(private val encryptionAlgorithm: EncryptionAlgorithm = Encryptio
         return processEncryptionRequest(encryptionAlgorithm, keyAlias, plainTexts)
     }
 
+    fun encrypt(keyAlias: String, file: File) : File {
+        return processEncryptionRequest(keyAlias, file)
+    }
+
     fun decrypt(keyAlias: String, cipherText: String) : String {
         return processDecryptionRequest(encryptionAlgorithm, keyAlias, cipherText)
     }
@@ -27,4 +32,13 @@ class SaltBlock(private val encryptionAlgorithm: EncryptionAlgorithm = Encryptio
     fun decrypt(keyAlias: String, cipherTexts: List<String>) : List<String> {
         return processDecryptionRequest(encryptionAlgorithm, keyAlias, cipherTexts)
     }
+
+    fun decrypt(keyAlias: String, file: File) : File {
+        return processDecryptionRequest(keyAlias, file)
+    }
+
+    fun getPublicKey(keyAlias: String) : String {
+        return processPublicKeyRequest(encryptionAlgorithm, keyAlias)
+    }
+
 }
