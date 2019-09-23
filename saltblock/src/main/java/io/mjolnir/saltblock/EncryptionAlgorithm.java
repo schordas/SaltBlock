@@ -1,7 +1,14 @@
 package io.mjolnir.saltblock;
 
 public enum  EncryptionAlgorithm {
+    /**
+     * Uses AES/GCM/NoPadding
+     */
+    AES,
 
-    AES
+    /**
+     * Uses RSA/ECB/PKCS1
+     */
+    RSA
 
 }
