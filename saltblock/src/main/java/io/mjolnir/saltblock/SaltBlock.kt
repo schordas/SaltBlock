@@ -27,4 +27,9 @@ class SaltBlock(private val encryptionAlgorithm: EncryptionAlgorithm = Encryptio
     fun decrypt(keyAlias: String, cipherTexts: List<String>) : List<String> {
         return processDecryptionRequest(encryptionAlgorithm, keyAlias, cipherTexts)
     }
+
+    fun getPublicKey(keyAlias: String) : String {
+        return processPublicKeyRequest(encryptionAlgorithm, keyAlias)
+    }
+
 }
