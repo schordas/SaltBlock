@@ -1,6 +1,7 @@
 package io.mjolnir.saltblock
 
 import java.io.*
+import java.lang.IllegalArgumentException
 
 fun Serializable.getByteArray(): ByteArray {
     val byteStream = ByteArrayOutputStream()
@@ -33,3 +34,7 @@ fun ByteArray.getObject(): Any {
 fun emptyByteArray(): ByteArray = ByteArray(0)
 
 fun emptyString(): String = ""
+
+fun isOver(bytes: ByteArray) {
+    require(bytes.size < 245) { "Error: Cannot use RSA to encrypt more than 245 bytes" }
+}
