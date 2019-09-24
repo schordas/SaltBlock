@@ -45,12 +45,13 @@ class RSA extends RSAKeyProvider {
         return cipher.unwrap(wrappedKeyBytes, "AES", Cipher.SECRET_KEY);
     }
 
-    static List<String> encrypt(String keyAlias, List<String> plainTexts) throws
+    static List<String> encrypt(List<String> plainTexts, String publicKey) throws
             NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException,
-            InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
-        PublicKey key = getPublicKey(keyAlias);
+            InvalidKeyException, BadPaddingException, IllegalBlockSizeException,
+            InvalidKeySpecException {
+        PublicKey key = publicKeyFromString(publicKey);
 
-        Cipher cipher = Cipher.getInstance(Constants.RSA, Constants.KEY_STORE_WORK_AROUND);
+        Cipher cipher = Cipher.getInstance(Constants.RSA);
         cipher.init(Cipher.ENCRYPT_MODE, key);
 
         List<String> cipherTexts = new ArrayList<>();
@@ -98,12 +99,12 @@ class RSA extends RSAKeyProvider {
         return cipher.doFinal(cipherBytes);
     }
 
-    static byte[] doFinal(int mode, String alias, byte[] bytes) throws NoSuchPaddingException,
-            NoSuchAlgorithmException, NoSuchProviderException, InvalidKeyException,
-            BadPaddingException, IllegalBlockSizeException {
+    static byte[] doFinal(int mode, String alias, byte[] bytes, String publicKey) throws
+            NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException,
+            InvalidKeyException, BadPaddingException, IllegalBlockSizeException, InvalidKeySpecException {
         Key key;
         if (mode == Cipher.ENCRYPT_MODE) {
-           key = getPublicKey(alias);
+            key = publicKeyFromString(publicKey);
         } else if(mode == Cipher.DECRYPT_MODE) {
            key = getPrivateKey(alias);
         } else {
