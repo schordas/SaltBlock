@@ -7,7 +7,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.util.Enumeration;
 
-class KeyProvider {
+class KeyStoreProvider {
 
     static boolean hasKey(String keyAlias) throws KeyStoreException, CertificateException,
             NoSuchAlgorithmException, IOException {

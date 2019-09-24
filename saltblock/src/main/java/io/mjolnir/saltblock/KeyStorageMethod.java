@@ -3,7 +3,7 @@ package io.mjolnir.saltblock;
 public enum KeyStorageMethod {
 
     /**
-     * @see KeyProvider#generateKey(String)
+     * @see KeyStoreProvider#generateKey(String)
      * KEY_STORE will leverage the Android Keystore
      * This suggests that the user does not need to implement a password specific to the app.
      * The Android KeyStore uses the device PIN/Password.

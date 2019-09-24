@@ -11,6 +11,10 @@ class Encoder {
         return Base64.encodeToString(toEncode, Base64.DEFAULT);
     }
 
+    static byte[] encode(byte[] toEncode) {
+        return Base64.encode(toEncode, Base64.DEFAULT);
+    }
+
     static String decodeToString(byte[] toDecode) {
         return new String(toDecode, StandardCharsets.UTF_8);
     }

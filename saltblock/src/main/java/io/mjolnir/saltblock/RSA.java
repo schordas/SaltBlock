@@ -7,6 +7,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +26,23 @@ class RSA extends RSAKeyProvider {
     private static PrivateKey getPrivateKey(String keyAlias) {
         KeyPair keyPair = getRsaKey(keyAlias);
         return keyPair != null ? keyPair.getPrivate() : null;
+    }
+
+    static String wrapKey(String publicKey, Key keyToWrap) throws InvalidKeySpecException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException {
+        PublicKey wrappingKey = publicKeyFromString(publicKey);
+        Cipher cipher = Cipher.getInstance(Constants.RSA);
+        cipher.init(Cipher.WRAP_MODE, wrappingKey);
+
+        byte[] wrappedBytes = cipher.wrap(keyToWrap);
+        return Encoder.encodeToString(wrappedBytes);
+    }
+
+    static Key unwrapKey(String alias, String wrappedKey) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException {
+        PrivateKey unwrappingKey = getPrivateKey(alias);
+        Cipher cipher = Cipher.getInstance(Constants.RSA);
+        cipher.init(Cipher.UNWRAP_MODE, unwrappingKey);
+        byte[] wrappedKeyBytes = Encoder.decode(wrappedKey);
+        return cipher.unwrap(wrappedKeyBytes, "AES", Cipher.SECRET_KEY);
     }
 
     static List<String> encrypt(String keyAlias, List<String> plainTexts) throws

@@ -1,7 +1,9 @@
 package io.mjolnir.saltblock;
 
+import java.nio.ByteBuffer;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
+import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,6 +18,10 @@ import javax.crypto.spec.GCMParameterSpec;
 
 class AES extends AESKeyProvider {
 
+    static SecretKey getKeyToWrap() {
+        return getAesKeyToWrap();
+    }
+
     static String encrypt(String alias, byte[] plainBytes) throws NoSuchPaddingException,
             NoSuchAlgorithmException, InvalidKeyException, BadPaddingException,
             IllegalBlockSizeException {
@@ -25,6 +31,36 @@ class AES extends AESKeyProvider {
 
         return doEncrypt(cipher, key, plainBytes);
     }
+
+    static byte[] encrypt(SecretKey key, byte[] plainBytes) throws NoSuchPaddingException,
+            NoSuchAlgorithmException, InvalidKeyException, BadPaddingException,
+            IllegalBlockSizeException, InvalidAlgorithmParameterException {
+        Cipher cipher = Cipher.getInstance(Constants.AES);
+
+        byte[] iv = getIV();
+        GCMParameterSpec parameterSpec = new GCMParameterSpec(128, iv);
+        cipher.init(Cipher.ENCRYPT_MODE, key, parameterSpec);
+
+        byte[] cipherBytes = cipher.doFinal(plainBytes);
+
+        key = null;
+
+        return processCipher(cipherBytes, iv);
+    }
+
+   private static byte[] processCipher(byte[] cipher, byte[] iv) {
+       ByteBuffer buffer = ByteBuffer.allocate(4 + iv.length + cipher.length);
+       buffer.putInt(iv.length);
+       buffer.put(iv);
+
+       Arrays.fill(iv, (byte) 0);
+
+       buffer.put(cipher);
+       cipher = buffer.array();
+       cipher = Encoder.encode(cipher);
+
+       return cipher;
+   }
 
     static List<String> encrypt(String alias, List<String> plainTexts) throws
             NoSuchAlgorithmException, NoSuchPaddingException, BadPaddingException,
@@ -58,9 +94,36 @@ class AES extends AESKeyProvider {
         return encryptedString;
     }
 
+    static byte[] decrypt(Key key, String cipherText) throws NoSuchPaddingException,
+            NoSuchAlgorithmException, InvalidKeyException, BadPaddingException,
+            IllegalBlockSizeException, InvalidAlgorithmParameterException {
+        byte[] cipher = Encoder.decode(cipherText);
+        ByteBuffer buffer =ByteBuffer.wrap(cipher);
+        int ivLength = buffer.getInt();
+        if (ivLength < 12 || ivLength > 16) {
+            throw new IllegalArgumentException("Invalid iv length");
+        }
+        byte[] iv = new byte[ivLength];
+        buffer.get(iv);
+        byte[] cipherBytes = new byte[buffer.remaining()];
+        buffer.get(cipherBytes);
+
+        Cipher decryptionCipher = Cipher.getInstance(Constants.AES);
+
+        GCMParameterSpec spec = new GCMParameterSpec(128, iv);
+
+        Arrays.fill(iv, (byte) 0);
+        decryptionCipher.init(Cipher.DECRYPT_MODE, key, spec);
+
+        key = null;
+
+        return decryptionCipher.doFinal(cipherBytes);
+    }
+
     static byte[] decrypt(String alias, String cipherText) throws NoSuchPaddingException,
             NoSuchAlgorithmException {
         Cipher cipher = Cipher.getInstance(Constants.AES);
+
         SecretKey key = getAesKey(alias);
 
         try {
@@ -118,7 +181,8 @@ class AES extends AESKeyProvider {
 
         String[] split = cipherText.split(Constants.IV_SEPARATOR, 2);
         if (split.length != 2) {
-            throw new IllegalArgumentException("Cipher text is incorrect, could not parse cipher for decryption");
+            throw new IllegalArgumentException(
+                    "Cipher text is incorrect, could not parse cipher for decryption");
         }
         return split;
     }

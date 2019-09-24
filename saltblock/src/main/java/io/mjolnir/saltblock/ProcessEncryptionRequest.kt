@@ -1,11 +1,14 @@
 package io.mjolnir.saltblock
 
+import androidx.core.util.Pair
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.Serializable
+import java.security.Key
 import javax.crypto.Cipher
+import javax.crypto.SecretKey
 
 fun processEncryptionRequest(encryptionAlgorithm: EncryptionAlgorithm, keyAlias: String,
                              plainTexts: List<String>): List<String> {
@@ -43,6 +46,37 @@ fun processEncryptionRequest(keyAlias: String, file: File) : File {
             file
         }
     }
+}
+
+fun processSharedFileEncryptionRequest(publicKey: String, file: File) : Pair<String, File> {
+    return runBlocking {
+        withContext(Dispatchers.Default) {
+            val plainBytes = file.readBytes()
+            val keyToWrap = threadedKeyRequest()
+            val fileBytes = threadedShareFileEncryptionRequest(keyToWrap, plainBytes)
+            file.writeBytes(fileBytes)
+
+            val wrappedKey = threadedKeyWrapRequest(publicKey, keyToWrap)
+            Pair(wrappedKey, file)
+        }
+    }
+}
+
+private fun threadedShareFileEncryptionRequest(key: SecretKey, plainBytes: ByteArray) : ByteArray {
+    return try {
+        AES.encrypt(key, plainBytes)
+    } catch (e : Exception) {
+        e.printStackTrace()
+        emptyByteArray()
+    }
+}
+
+private fun threadedKeyRequest() : SecretKey {
+    return AES.getKeyToWrap()
+}
+
+private fun threadedKeyWrapRequest(publicKey: String, key: Key) : String {
+    return RSA.wrapKey(publicKey, key)
 }
 
 private fun threadedEncryptionRequest(keyAlias: String,

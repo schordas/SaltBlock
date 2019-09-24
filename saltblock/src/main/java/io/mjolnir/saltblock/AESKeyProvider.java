@@ -12,13 +12,16 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.SecureRandom;
 import java.security.UnrecoverableEntryException;
 import java.security.cert.CertificateException;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 
-class AESKeyProvider extends KeyProvider {
+class AESKeyProvider extends KeyStoreProvider {
+
+    private static final int KEY_SIZE = 256;
 
     private static final String LOG_TAG = AESKeyProvider.class.getSimpleName();
 
@@ -61,6 +64,37 @@ class AESKeyProvider extends KeyProvider {
             e.printStackTrace();
             return null;
         }
+    }
+
+    static SecretKey getAesKeyToWrap() {
+        try {
+            return generateAesKey();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private static SecretKey generateAesKey() throws NoSuchAlgorithmException {
+        KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
+        keyGenerator.init(KEY_SIZE);
+        return keyGenerator.generateKey();
+    }
+
+
+    static byte[] getIV() throws NoSuchAlgorithmException {
+        SecureRandom secureRandom;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            secureRandom = SecureRandom.getInstanceStrong();
+        } else {
+            secureRandom = new SecureRandom();
+        }
+
+        byte[] iv = new byte[12];
+        secureRandom.nextBytes(iv);
+
+        return iv;
+
     }
 
     /**
