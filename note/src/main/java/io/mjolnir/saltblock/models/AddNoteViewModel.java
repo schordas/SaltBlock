@@ -33,9 +33,10 @@ public class AddNoteViewModel extends ViewModel {
         List<String> encrypted;
 
         if (mIsAES) {
-            encrypted = saltBlockAES.encrypt("myAESAlias", list);
+            encrypted = saltBlockAES.encryptAES("myAESAlias", list);
         } else {
-            encrypted = saltBlockRSA.encrypt("myRSAAlias", list);
+            String publicKey = saltBlockRSA.getPublicKey("myRSAAlias");
+            encrypted = saltBlockRSA.encryptRSA(list, publicKey);
         }
 
         DatabaseReference noteRef = mDatabase.child("users/").child(uId);
