@@ -92,7 +92,7 @@ private fun threadedDecryptionRequest(encryptionAlgorithm: EncryptionAlgorithm, 
             }
 
             EncryptionAlgorithm.RSA -> {
-                RSA.doFinal(Cipher.DECRYPT_MODE, keyAlias, cipherBytes)
+                RSA.doFinal(Cipher.DECRYPT_MODE, keyAlias, cipherBytes, emptyString())
             }
         }
     } catch (e : Exception) {

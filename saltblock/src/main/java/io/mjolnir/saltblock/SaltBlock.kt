@@ -6,23 +6,36 @@ import java.io.Serializable
 
 class SaltBlock(private val encryptionAlgorithm: EncryptionAlgorithm = EncryptionAlgorithm.AES) {
 
-    fun encrypt(keyAlias: String, plainText: String) : String {
-        return processEncryptionRequest(encryptionAlgorithm, keyAlias, plainText)
+    fun encryptAES(keyAlias: String, plainText: String) : String {
+        return processEncryptionRequest(keyAlias, plainText)
     }
 
-    fun encrypt(keyAlias: String, obj: Serializable) : String {
-        return processEncryptionRequest(encryptionAlgorithm, keyAlias, obj)
+    fun encryptAES(keyAlias: String, obj: Serializable) : String {
+        return processEncryptionRequest(keyAlias, obj)
     }
 
-    fun encrypt(keyAlias: String, plainTexts: List<String>) : List<String> {
-        return processEncryptionRequest(encryptionAlgorithm, keyAlias, plainTexts)
+    fun encryptAES(keyAlias: String, plainTexts: List<String>) : List<String> {
+        return processEncryptionRequest(keyAlias, plainTexts)
     }
 
-    fun encrypt(keyAlias: String, file: File) : File {
+    fun encryptRSA(plainText: String, publicKey: String) : String {
+        return processRSAEncryptionRequest(plainText, publicKey)
+    }
+
+    fun encryptRSA(obj: Serializable, publicKey: String) : String {
+        return processRSAEncryptionRequest(obj, publicKey)
+    }
+
+    fun encryptRSA(plainTexts: List<String>, publicKey: String) :
+            List<String> {
+        return processRSAEncryptionRequest(plainTexts, publicKey)
+    }
+
+    fun encryptPrivateFile(keyAlias: String, file: File) : File {
         return processEncryptionRequest(keyAlias, file)
     }
 
-    fun encryptFileToShare(temporaryAesAlias: String, publicKey: String, file: File) :
+    fun encryptSharedFile(publicKey: String, file: File) :
             Pair<String, File> {
         return processSharedFileEncryptionRequest(publicKey, file)
     }
