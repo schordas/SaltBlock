@@ -61,6 +61,6 @@ class SaltBlock(private val encryptionAlgorithm: EncryptionAlgorithm = Encryptio
     }
 
     fun getPublicKey(keyAlias: String) : String {
-        return processPublicKeyRequest(encryptionAlgorithm, keyAlias)
+        return processPublicKeyRequest(keyAlias)
     }
 }
