@@ -18,6 +18,10 @@ class SaltBlock(private val encryptionAlgorithm: EncryptionAlgorithm = Encryptio
         return processEncryptionRequest(keyAlias, plainTexts)
     }
 
+    fun encryptAES(keyAlias: String, file: File) : File {
+        return processEncryptionRequest(keyAlias, file)
+    }
+
     fun encryptRSA(plainText: String, publicKey: String) : String {
         return processRSAEncryptionRequest(plainText, publicKey)
     }
@@ -29,10 +33,6 @@ class SaltBlock(private val encryptionAlgorithm: EncryptionAlgorithm = Encryptio
     fun encryptRSA(plainTexts: List<String>, publicKey: String) :
             List<String> {
         return processRSAEncryptionRequest(plainTexts, publicKey)
-    }
-
-    fun encryptPrivateFile(keyAlias: String, file: File) : File {
-        return processEncryptionRequest(keyAlias, file)
     }
 
     fun encryptSharedFile(publicKey: String, file: File) :
