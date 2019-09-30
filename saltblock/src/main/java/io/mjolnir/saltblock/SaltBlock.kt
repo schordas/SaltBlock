@@ -75,4 +75,8 @@ class SaltBlock {
     fun getPublicKey(keyAlias: String) : String {
         return processPublicKeyRequest(keyAlias)
     }
+
+    fun removeKey(keyAlias: String) {
+        KeyStoreProvider.removeKey(keyAlias)
+    }
 }
