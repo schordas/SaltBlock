@@ -1,7 +1,9 @@
 # SaltBlock
 ## Usage
-*SaltBlock is currently under development and isn't necessarily stable*, thus it is not available
-as a gradle dependency, nor is a jar available. You will have to clone the repo and compile the
+*SaltBlock is currently under development and isn't necessarily stable. Furthermore, it has
+not yet been sufficiently tested for best practices with key sharing and key generation*, thus it is
+not available as a gradle dependency, nor is a jar available. Once the library has been thoroughly
+tested it will be more readily available. For now you will have to clone the repo and compile the
 jar on your own.
 
 As such, the sample app **note** is not necessary to build the library. Note is only for
