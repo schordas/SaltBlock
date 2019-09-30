@@ -22,7 +22,7 @@ import java.security.cert.CertificateException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 
-class RSAKeyProvider extends KeyProvider {
+class RSAKeyProvider extends KeyStoreProvider {
 
     private static final String LOG_TAG = RSAKeyProvider.class.getSimpleName();
 
@@ -75,7 +75,7 @@ class RSAKeyProvider extends KeyProvider {
         keyGenerator.generateKeyPair();
     }
 
-    private static PublicKey publicKeyFromString(String key) throws NoSuchAlgorithmException,
+    static PublicKey publicKeyFromString(String key) throws NoSuchAlgorithmException,
             InvalidKeySpecException {
        byte[] keyBytes = Encoder.decode(key);
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");

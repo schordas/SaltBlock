@@ -1,44 +1,82 @@
 package io.mjolnir.saltblock
 
+import androidx.core.util.Pair
 import java.io.File
 import java.io.Serializable
 
-class SaltBlock(private val encryptionAlgorithm: EncryptionAlgorithm = EncryptionAlgorithm.AES) {
+class SaltBlock {
 
-    fun encrypt(keyAlias: String, plainText: String) : String {
-        return processEncryptionRequest(encryptionAlgorithm, keyAlias, plainText)
+    fun encryptAES(keyAlias: String, plainText: String) : String {
+        return processEncryptionRequest(keyAlias, plainText)
     }
 
-    fun encrypt(keyAlias: String, obj: Serializable) : String {
-        return processEncryptionRequest(encryptionAlgorithm, keyAlias, obj)
+    fun encryptAES(keyAlias: String, obj: Serializable) : String {
+        return processEncryptionRequest(keyAlias, obj)
     }
 
-    fun encrypt(keyAlias: String, plainTexts: List<String>) : List<String> {
-        return processEncryptionRequest(encryptionAlgorithm, keyAlias, plainTexts)
+    fun encryptAES(keyAlias: String, plainTexts: List<String>) : List<String> {
+        return processEncryptionRequest(keyAlias, plainTexts)
     }
 
-    fun encrypt(keyAlias: String, file: File) : File {
+    fun encryptAES(keyAlias: String, file: File) : File {
         return processEncryptionRequest(keyAlias, file)
     }
 
-    fun decrypt(keyAlias: String, cipherText: String) : String {
-        return processDecryptionRequest(encryptionAlgorithm, keyAlias, cipherText)
+    fun encryptRSA(plainText: String, publicKey: String) : String {
+        return processRSAEncryptionRequest(plainText, publicKey)
     }
 
-    fun decryptToObj(keyAlias: String, cipherText: String) : Any {
-        return processDecryptionToObjectRequest(encryptionAlgorithm, keyAlias, cipherText)
+    fun encryptRSA(obj: Serializable, publicKey: String) : String {
+        return processRSAEncryptionRequest(obj, publicKey)
+    }
+
+    fun encryptRSA(plainTexts: List<String>, publicKey: String) :
+            List<String> {
+        return processRSAEncryptionRequest(plainTexts, publicKey)
+    }
+
+    fun encryptSharedFile(publicKey: String, file: File) :
+            Pair<String, File> {
+        return processSharedFileEncryptionRequest(publicKey, file)
+    }
+
+    fun decryptAES(keyAlias: String, cipherText: String) : String {
+        return processDecryptionRequest(EncryptionAlgorithm.AES, keyAlias, cipherText)
+    }
+
+    fun decryptToObjAES(keyAlias: String, cipherText: String) : Any {
+        return processDecryptionToObjectRequest(EncryptionAlgorithm.AES, keyAlias, cipherText)
     }
     
-    fun decrypt(keyAlias: String, cipherTexts: List<String>) : List<String> {
-        return processDecryptionRequest(encryptionAlgorithm, keyAlias, cipherTexts)
+    fun decryptAES(keyAlias: String, cipherTexts: List<String>) : List<String> {
+        return processDecryptionRequest(EncryptionAlgorithm.AES, keyAlias, cipherTexts)
     }
 
-    fun decrypt(keyAlias: String, file: File) : File {
+    fun decryptAES(keyAlias: String, file: File) : File {
         return processDecryptionRequest(keyAlias, file)
     }
 
-    fun getPublicKey(keyAlias: String) : String {
-        return processPublicKeyRequest(encryptionAlgorithm, keyAlias)
+    fun decryptRSA(keyAlias: String, cipherText: String) : String {
+        return processDecryptionRequest(EncryptionAlgorithm.RSA, keyAlias, cipherText)
     }
 
+    fun decryptToObjRSA(keyAlias: String, cipherText: String) : Any {
+        return processDecryptionToObjectRequest(EncryptionAlgorithm.RSA, keyAlias, cipherText)
+    }
+
+    fun decryptRSA(keyAlias: String, cipherTexts: List<String>) : List<String> {
+        return processDecryptionRequest(EncryptionAlgorithm.RSA, keyAlias, cipherTexts)
+    }
+
+    fun decryptSharedFile(rsaKeyAlias: String, wrappedKey: String, file: File) : File {
+        return processDecryptionRequest(rsaKeyAlias, wrappedKey, file)
+    }
+
+    fun getPublicKey(keyAlias: String) : String {
+        return processPublicKeyRequest(keyAlias)
+    }
+
+    fun removeKey(keyAlias: String) {
+        KeyStoreProvider.removeKey(keyAlias)
+    }
 }

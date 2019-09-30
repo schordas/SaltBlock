@@ -23,8 +23,7 @@ public class AddNoteViewModel extends ViewModel {
     private static String mAlg = EncryptionAlgorithm.AES.name();
 
     public void editNote(String uId, String title, String text) {
-        SaltBlock saltBlockAES = new SaltBlock();
-        SaltBlock saltBlockRSA = new SaltBlock(EncryptionAlgorithm.RSA);
+        SaltBlock saltBlock = new SaltBlock();
 
         List<String> list = new ArrayList<>();
         list.add(title);
@@ -33,9 +32,10 @@ public class AddNoteViewModel extends ViewModel {
         List<String> encrypted;
 
         if (mIsAES) {
-            encrypted = saltBlockAES.encrypt("myAESAlias", list);
+            encrypted = saltBlock.encryptAES("myAESAlias", list);
         } else {
-            encrypted = saltBlockRSA.encrypt("myRSAAlias", list);
+            String publicKey = saltBlock.getPublicKey("myRSAAlias");
+            encrypted = saltBlock.encryptRSA(list, publicKey);
         }
 
         DatabaseReference noteRef = mDatabase.child("users/").child(uId);

@@ -22,8 +22,7 @@ public class ListViewModel extends ViewModel {
 
     private String uId;
 
-    private SaltBlock saltBlockAES = new SaltBlock();
-    private SaltBlock saltBlockRSA = new SaltBlock(EncryptionAlgorithm.RSA);
+    private SaltBlock saltBlock = new SaltBlock();
 
     @NonNull
     public LiveData<DataSnapshot> getNotes(String uId) {
@@ -52,11 +51,11 @@ public class ListViewModel extends ViewModel {
             String plainTitle;
             String plainNote;
             if (algs.get(i).equals(EncryptionAlgorithm.AES.name())) {
-                plainTitle = saltBlockAES.decrypt("myAESAlias", cipherTitles.get(i));
-                plainNote = saltBlockAES.decrypt("myAESAlias", cipherNotes.get(i));
+                plainTitle = saltBlock.decryptAES("myAESAlias", cipherTitles.get(i));
+                plainNote = saltBlock.decryptAES("myAESAlias", cipherNotes.get(i));
             } else {
-                plainTitle = saltBlockRSA.decrypt("myRSAAlias", cipherTitles.get(i));
-                plainNote = saltBlockRSA.decrypt("myRSAAlias", cipherNotes.get(i));
+                plainTitle = saltBlock.decryptRSA("myRSAAlias", cipherTitles.get(i));
+                plainNote = saltBlock.decryptRSA("myRSAAlias", cipherNotes.get(i));
             }
 
             notes.add(new Note(ids.get(i), plainTitle, plainNote, algs.get(i)));

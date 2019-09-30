@@ -7,6 +7,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,12 +28,30 @@ class RSA extends RSAKeyProvider {
         return keyPair != null ? keyPair.getPrivate() : null;
     }
 
-    static List<String> encrypt(String keyAlias, List<String> plainTexts) throws
-            NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException,
-            InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
-        PublicKey key = getPublicKey(keyAlias);
+    static String wrapKey(String publicKey, Key keyToWrap) throws InvalidKeySpecException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException {
+        PublicKey wrappingKey = publicKeyFromString(publicKey);
+        Cipher cipher = Cipher.getInstance(Constants.RSA);
+        cipher.init(Cipher.WRAP_MODE, wrappingKey);
 
-        Cipher cipher = Cipher.getInstance(Constants.RSA, Constants.KEY_STORE_WORK_AROUND);
+        byte[] wrappedBytes = cipher.wrap(keyToWrap);
+        return Encoder.encodeToString(wrappedBytes);
+    }
+
+    static Key unwrapKey(String alias, String wrappedKey) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException {
+        PrivateKey unwrappingKey = getPrivateKey(alias);
+        Cipher cipher = Cipher.getInstance(Constants.RSA);
+        cipher.init(Cipher.UNWRAP_MODE, unwrappingKey);
+        byte[] wrappedKeyBytes = Encoder.decode(wrappedKey);
+        return cipher.unwrap(wrappedKeyBytes, "AES", Cipher.SECRET_KEY);
+    }
+
+    static List<String> encrypt(List<String> plainTexts, String publicKey) throws
+            NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException,
+            InvalidKeyException, BadPaddingException, IllegalBlockSizeException,
+            InvalidKeySpecException {
+        PublicKey key = publicKeyFromString(publicKey);
+
+        Cipher cipher = Cipher.getInstance(Constants.RSA);
         cipher.init(Cipher.ENCRYPT_MODE, key);
 
         List<String> cipherTexts = new ArrayList<>();
@@ -80,19 +99,21 @@ class RSA extends RSAKeyProvider {
         return cipher.doFinal(cipherBytes);
     }
 
-    static byte[] doFinal(int mode, String alias, byte[] bytes) throws NoSuchPaddingException,
-            NoSuchAlgorithmException, NoSuchProviderException, InvalidKeyException,
-            BadPaddingException, IllegalBlockSizeException {
+    static byte[] doFinal(int mode, String alias, byte[] bytes, String publicKey) throws
+            NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException,
+            InvalidKeyException, BadPaddingException, IllegalBlockSizeException, InvalidKeySpecException {
         Key key;
+        Cipher cipher;
         if (mode == Cipher.ENCRYPT_MODE) {
-           key = getPublicKey(alias);
+            key = publicKeyFromString(publicKey);
+            cipher = Cipher.getInstance(Constants.RSA);
         } else if(mode == Cipher.DECRYPT_MODE) {
            key = getPrivateKey(alias);
+           cipher = Cipher.getInstance(Constants.RSA, Constants.KEY_STORE_WORK_AROUND);
         } else {
             throw new IllegalArgumentException("Cipher mode must be specified to encrypt or decrypt");
         }
 
-        Cipher cipher = Cipher.getInstance(Constants.RSA, Constants.KEY_STORE_WORK_AROUND);
         cipher.init(mode, key);
 
         return cipher.doFinal(bytes);
